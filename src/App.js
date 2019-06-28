@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import { LoginManager } from 'react-native-fbsdk';
+import { LoginManager, AccessToken, GraphRequest, GraphRequestManager } from 'react-native-fbsdk';
 
 export default class App extends Component<Props> {
 
@@ -14,13 +14,39 @@ export default class App extends Component<Props> {
   }
 
   onLoginFacebook () {
-    LoginManager.logInWithReadPermissions(['public_profile']).then(
+    LoginManager.logInWithReadPermissions(['public_profile', 'email']).then(
       function(result) {
         if (result.isCancelled) {
           this.setState({response: 'Login was cancelled'});
         } else {
-          this.setState({response: 'Login was successful with permissions: '
-            + result.grantedPermissions.toString()});
+         AccessToken.getCurrentAccessToken().then(
+            (data) => {
+              const responseCallback = ((error, result) => {
+                if (error) {
+                  this.setState({response: 'Error data' + error});
+                } else {
+                  this.setState({response: 'Name ' + result.name + ' Email ' + result.email});
+                }
+              })
+              const profileRequestParams = {
+                fields: {
+                  string: 'id, name, email, first_name, last_name, picture'
+                }
+              }
+              const profileRequestConfig = {
+                httpMethod: 'GET',
+                version: 'v2.5',
+                parameters: profileRequestParams,
+                accessToken: data.accessToken.toString()
+              }
+              const profileRequest = new GraphRequest(
+                '/me',
+                profileRequestConfig,
+                responseCallback,
+              )
+              new GraphRequestManager().addRequest(profileRequest).start();
+            }
+          )
         }
       }.bind(this),
       function(error) {
