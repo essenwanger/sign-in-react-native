@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "809867189620",
+    "firebase_url": "https://fir-example-3024f.firebaseio.com",
+    "project_id": "fir-example-3024f",
+    "storage_bucket": "fir-example-3024f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:809867189620:android:d20710f71525262b",
+        "android_client_info": {
+          "package_name": "com.signin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "809867189620-f4riqe8decsm4iuknvoliceltbf69ikf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDoxUccrPGOHbpc0T9a8C69yrXIEvQ2svQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "809867189620-f4riqe8decsm4iuknvoliceltbf69ikf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

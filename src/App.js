@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { LoginManager, AccessToken, GraphRequest, GraphRequestManager } from 'react-native-fbsdk';
+import { GoogleSignin, statusCodes } from 'react-native-google-signin';
 
 export default class App extends Component<Props> {
 
@@ -11,6 +12,13 @@ export default class App extends Component<Props> {
     this.onLogoutFacebook = this.onLogoutFacebook.bind(this);
     this.onLoginGoogle = this.onLoginGoogle.bind(this);
     this.onLogoutGoogle = this.onLogoutGoogle.bind(this);
+  }
+
+  componentDidMount () {
+    GoogleSignin.configure({
+      webClientId: '809867189620-f4riqe8decsm4iuknvoliceltbf69ikf.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
+      //iosClientId: '<FROM DEVELOPER CONSOLE>', // [iOS] optional, if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
+    });
   }
 
   onLoginFacebook () {
@@ -60,12 +68,31 @@ export default class App extends Component<Props> {
     this.setState({response: 'LogOut Facebook'});
   }
 
-  onLoginGoogle () {
-    this.setState({response: 'LogIn falta implementar'});
+  async onLoginGoogle () {
+    try {
+      const userInfo = await GoogleSignin.signIn();
+      this.setState({ response: 'Name ' + userInfo.user.name + ' Email ' + userInfo.user.email });
+    } catch (error) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        // user cancelled the login flow
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        // operation (f.e. sign in) is in progress already
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        // play services not available or outdated
+      } else {
+        // some other error happened
+      }
+    }
   }
 
-  onLogoutGoogle () {
-    this.setState({response: 'LogOut falta implementar'});
+  async onLogoutGoogle () {
+    try {
+      await GoogleSignin.revokeAccess();
+      await GoogleSignin.signOut();
+      this.setState({response: 'LogOut Google'});
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   render() {
